@@ -41,21 +41,26 @@ using namespace std;
 //
 // riwayatMaju() sengaja disediakan sebagai pembanding untuk Soal 2.
 
-int riwayatMaju(DNode* head, int* keluaran) {
+int riwayatMaju(DNode *head, int *keluaran)
+{
     int n = 0;
-    for (DNode* p = head; p != nullptr; p = p->next) {
+    for (DNode *p = head; p != nullptr; p = p->next)
+    {
         keluaran[n] = p->data;
         ++n;
     }
     return n;
 }
 
-int putaranTab(CNode* head, int* keluaran) {
-    if (head == nullptr) return 0;
+int putaranTab(CNode *head, int *keluaran)
+{
+    if (head == nullptr)
+        return 0;
 
     int n = 0;
-    CNode* p = head;
-    do {
+    CNode *p = head;
+    do
+    {
         keluaran[n] = p->data;
         ++n;
         p = p->next;
@@ -63,21 +68,26 @@ int putaranTab(CNode* head, int* keluaran) {
     return n;
 }
 
-void hapusSeluruhRiwayat(DNode*& head, DNode*& tail) {
-    while (head != nullptr) {
-        DNode* berikut = head->next;
+void hapusSeluruhRiwayat(DNode *&head, DNode *&tail)
+{
+    while (head != nullptr)
+    {
+        DNode *berikut = head->next;
         delete head;
         head = berikut;
     }
     tail = nullptr;
 }
 
-void tutupSemuaTab(CNode*& head) {
-    if (head == nullptr) return;
+void tutupSemuaTab(CNode *&head)
+{
+    if (head == nullptr)
+        return;
 
-    CNode* p = head->next;
-    while (p != head) {
-        CNode* berikut = p->next;
+    CNode *p = head->next;
+    while (p != head)
+    {
+        CNode *berikut = p->next;
         delete p;
         p = berikut;
     }
@@ -88,23 +98,133 @@ void tutupSemuaTab(CNode*& head) {
 // =============================================================================
 
 // SOAL 1
-bool bukaHalaman(DNode*& head, DNode*& tail, int nomor) {
-    return false;
+bool bukaHalaman(DNode *&head, DNode *&tail, int nomor)
+{
+    DNode *baru = new DNode;
+
+    baru->data = nomor;
+    baru->prev = nullptr;
+    baru->next = nullptr;
+
+    if (head == nullptr)
+    {
+        head = baru;
+        tail = baru;
+    }
+
+    else
+    {
+        baru->prev = tail;
+        tail->next = baru;
+        tail = baru;
+    }
+
+    return true;
 }
 
 // SOAL 2
-int riwayatMundur(DNode* tail, int* keluaran) {
-    return 0;
+int riwayatMundur(DNode *tail, int *keluaran)
+{
+    int n = 0;
+
+    DNode *bantu = tail;
+
+    while (bantu != nullptr)
+    {
+        keluaran[n] = bantu->data;
+        n++;
+
+        bantu = bantu->prev;
+    }
+
+    return n;
 }
 
 // SOAL 3
-bool hapusHalaman(DNode*& head, DNode*& tail, int nomor) {
-    return false;
+bool hapusHalaman(DNode *&head, DNode *&tail, int nomor)
+{
+
+    if (head == nullptr)
+    {
+        return false;
+    }
+
+    DNode *del = head;
+
+    while (del != nullptr && del->data != nomor)
+    {
+        del = del->next;
+    }
+
+    if (del == nullptr)
+    {
+        return false;
+    }
+
+    if (del == head)
+    {
+
+        head = head->next;
+
+        if (head == nullptr)
+        {
+            tail = nullptr;
+        }
+        else
+        {
+            head->prev = nullptr;
+        }
+    }
+
+    else
+    {
+
+        del->prev->next = del->next;
+
+        if (del->next != nullptr)
+        {
+            del->next->prev = del->prev;
+        }
+        else
+        {
+
+            tail = del->prev;
+        }
+    }
+
+    delete del;
+
+    return true;
 }
 
 // SOAL 4
-bool bukaTab(CNode*& head, int nomor) {
-    return false;
+bool bukaTab(CNode *&head, int nomor)
+{
+    CNode *baru = new CNode;
+
+    baru->data = nomor;
+
+    if (head == nullptr)
+    {
+
+        baru->next = baru;
+        head = baru;
+
+        return true;
+    }
+
+    CNode *bantu = head;
+
+    while (bantu->next != head)
+    {
+        bantu = bantu->next;
+    }
+
+    bantu->next = baru;
+
+    baru->next = head;
+
+    return true;
 }
 
 // =============================================================================
@@ -132,56 +252,69 @@ bool bukaTab(CNode*& head, int nomor) {
 
 static const int KAPASITAS = 32;
 
-static const char* benarSalah(bool nilai) {
+static const char *benarSalah(bool nilai)
+{
     return nilai ? "true" : "false";
 }
 
-static ostream& baris(const string& label) {
+static ostream &baris(const string &label)
+{
     return cout << "    " << left << setw(16) << label << ": ";
 }
 
-static void cetakPenampung(const int* penampung, int banyak) {
+static void cetakPenampung(const int *penampung, int banyak)
+{
     cout << "{";
-    for (int i = 0; i < banyak && i < KAPASITAS; ++i) {
-        if (i > 0) cout << ", ";
+    for (int i = 0; i < banyak && i < KAPASITAS; ++i)
+    {
+        if (i > 0)
+            cout << ", ";
         cout << penampung[i];
     }
     cout << "}";
 }
 
-static void laporkanSalin(const string& label, int banyak, const int* penampung) {
+static void laporkanSalin(const string &label, int banyak, const int *penampung)
+{
     baris(label);
     cout << "n=" << banyak << "  isi=";
-    if (banyak < 0 || banyak > KAPASITAS) cout << "(nilai kembalian tidak masuk akal)";
-    else                                  cetakPenampung(penampung, banyak);
+    if (banyak < 0 || banyak > KAPASITAS)
+        cout << "(nilai kembalian tidak masuk akal)";
+    else
+        cetakPenampung(penampung, banyak);
     cout << "\n";
 }
 
 // Riwayat dibaca dari KEDUA arah, supaya sambungan yang putus langsung terlihat.
-static void keadaanRiwayat(DNode* head, DNode* tail) {
+static void keadaanRiwayat(DNode *head, DNode *tail)
+{
     int penampung[KAPASITAS];
     laporkanSalin("riwayatMaju", riwayatMaju(head, penampung), penampung);
     laporkanSalin("riwayatMundur", riwayatMundur(tail, penampung), penampung);
 }
 
-static void keadaanTab(CNode* head) {
+static void keadaanTab(CNode *head)
+{
     int penampung[KAPASITAS];
     laporkanSalin("putaranTab", putaranTab(head, penampung), penampung);
 }
 
-static void langkah(const string& teks) {
-    cout << "\n" << teks << "\n";
+static void langkah(const string &teks)
+{
+    cout << "\n"
+         << teks << "\n";
 }
 
-int main() {
+int main()
+{
     cout << "==================================================\n";
     cout << " Study Case — Peramban Web \"Jelajah\"\n";
     cout << " Memeragakan satu sesi pemakaian oleh Rani\n";
     cout << " (bagian ini tidak ikut dinilai)\n";
     cout << "==================================================\n";
 
-    DNode* head = nullptr;
-    DNode* tail = nullptr;
+    DNode *head = nullptr;
+    DNode *tail = nullptr;
 
     langkah("[0] Jelajah baru dibuka, riwayat masih kosong");
     keadaanRiwayat(head, tail);
@@ -215,7 +348,7 @@ int main() {
     keadaanRiwayat(head, tail);
     cout << "\n    Yang benar: false, dan riwayat tidak berubah\n";
 
-    CNode* tab = nullptr;
+    CNode *tab = nullptr;
 
     langkah("[4] SOAL 4 — bukaTab: membuka tab 201, lalu 202, lalu 203");
     bukaTab(tab, 201);
